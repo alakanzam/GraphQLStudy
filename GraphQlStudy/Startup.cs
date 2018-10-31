@@ -1,4 +1,5 @@
-﻿using GraphQlStudy.Models.Contexts;
+﻿using GraphiQl;
+using GraphQlStudy.Models.Contexts;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -34,7 +35,7 @@ namespace GraphQlStudy
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
 
-
+            app.UseGraphiQl();
             app.UseMvc();
         }
     }

@@ -14,6 +14,10 @@ namespace GraphQlStudy.Models.Contexts
         /// </summary>
         public virtual DbSet<Student> Students { get; set; }
 
+        public virtual DbSet<Class> Classes { get; set; }
+
+        public virtual DbSet<StudentInClass> StudentInClasses { get; set; }
+
         #endregion
 
         #region Methods

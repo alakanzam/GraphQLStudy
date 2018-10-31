@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
-namespace GraphQlStudy.Models.Entities
+namespace GraphQlStudy.ViewModels
 {
-    public class Student
+    public class StudentViewModel
     {
         #region Properties
 
@@ -14,14 +13,10 @@ namespace GraphQlStudy.Models.Entities
         public int Age { get; set; }
 
         public string Photo { get; set; }
-
-        #endregion
-
-        #region Relationships
-
-        [JsonIgnore]
-        public virtual ICollection<StudentInClass> StudentsInClasses { get; set; }
         
+        public IEnumerable<ClassViewModel> Classes { get; set; }
+
         #endregion
+
     }
 }

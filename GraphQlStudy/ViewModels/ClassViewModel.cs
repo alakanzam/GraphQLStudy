@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
-namespace GraphQlStudy.Models.Entities
+namespace GraphQlStudy.ViewModels
 {
-    public class Class
+    public class ClassViewModel
     {
         #region Properties
 
@@ -14,14 +13,8 @@ namespace GraphQlStudy.Models.Entities
         public double OpeningHour { get; set; }
 
         public double ClosingHour { get; set; }
-
-        #endregion
-
-        #region Relationships
-        
-        [JsonIgnore]
-        public virtual ICollection<StudentInClass> StudentsInClasses { get; set; }
         
         #endregion
+        
     }
 }
