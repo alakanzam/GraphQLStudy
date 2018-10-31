@@ -61,17 +61,13 @@ namespace GraphQlStudy.Models.GraphQL.Queries
                 resolve: context =>
                 {
                     var students = relationalDbContext.Students.AsQueryable();
-                    var classes = relationalDbContext.Classes.AsQueryable();
-                    var participatedClasses = relationalDbContext.StudentInClasses.AsQueryable();
                     
                     var ids = context.GetArgument<List<int>>("ids");
                     var age = context.GetArgument<RangeModel<double?, double?>>("age");
 
                     if (ids != null)
                         students = students.Where(x => ids.Contains(x.Id));
-
-                    var loadClassCondition = context.GetArgument<SearchClassModelType>("class");
-
+                    
                     if (age != null)
                     {
                         var from = age.From;
@@ -92,18 +88,18 @@ namespace GraphQlStudy.Models.GraphQL.Queries
                             Id = student.Id,
                             Age = student.Age,
                             FullName = student.FullName,
-                            Photo = student.Photo,
-                            Classes = from participatedClass in participatedClasses
-                                from oClass in classes
-                                where participatedClass.StudentId == student.Id &&
-                                      participatedClass.ClassId == oClass.Id
-                                select new ClassViewModel
-                                {
-                                    Id = oClass.Id,
-                                    ClosingHour = oClass.ClosingHour,
-                                    Name = oClass.Name,
-                                    OpeningHour = oClass.OpeningHour
-                                }
+                            Photo = student.Photo
+                            //Classes = from participatedClass in participatedClasses
+                            //    from oClass in classes
+                            //    where participatedClass.StudentId == student.Id &&
+                            //          participatedClass.ClassId == oClass.Id
+                            //    select new ClassViewModel
+                            //    {
+                            //        Id = oClass.Id,
+                            //        ClosingHour = oClass.ClosingHour,
+                            //        Name = oClass.Name,
+                            //        OpeningHour = oClass.OpeningHour
+                            //    }
                         });
 
                     if (pagination != null)

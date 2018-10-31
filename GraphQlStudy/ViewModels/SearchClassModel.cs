@@ -8,14 +8,20 @@ namespace GraphQlStudy.ViewModels
     {
         #region Properties
 
-       public List<int> Ids { get; set; }
+        public int StudentId { get; set; }
+
+        public List<int> Ids { get; set; }
+
+        public RangeModel<double?, double?> OpeningHour { get; set; }
 
         //public RangeModelType<double?, double?> OpeningHour { get; set; }
 
         //public RangeModelType<double?, double?> ClosingHour { get; set; }
 
         public PaginationModelType Pagination { get; set; }
-
+        
         #endregion
+        
+
     }
 }

@@ -15,13 +15,15 @@ namespace GraphQlStudy.Controllers
 
         private readonly RelationalDbContext _relationalDbContext;
 
+        private readonly IDependencyResolver _dependencyResolver;
         #endregion
 
         #region Contructor
 
-        public GraphQlController(DbContext dbContext)
+        public GraphQlController(DbContext dbContext, IDependencyResolver dependencyResolver)
         {
             _relationalDbContext = (RelationalDbContext)dbContext;
+            _dependencyResolver = dependencyResolver;
         }
 
         #endregion
@@ -33,7 +35,7 @@ namespace GraphQlStudy.Controllers
         {
             var inputs = query.Variables.ToInputs();
 
-            var schema = new Schema()
+            var schema = new Schema(_dependencyResolver)
             {
                 Query = new BasicStudentSearchQuery(_relationalDbContext)
             };
