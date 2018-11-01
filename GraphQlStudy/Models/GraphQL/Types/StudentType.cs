@@ -17,7 +17,7 @@ namespace GraphQlStudy.Models.GraphQL.Types
     {
         #region Constructor
 
-        public StudentType(DbContext dbContext, ICacheService<string, IEnumerable<ClassViewModel>> loadClassesCacheService)
+        public StudentType(DbContext dbContext, ICacheService<SearchClassModel, IEnumerable<ClassViewModel>> loadClassesCacheService)
         {
             var relationalDbContext = (RelationalDbContext)dbContext;
 
@@ -33,9 +33,8 @@ namespace GraphQlStudy.Models.GraphQL.Types
                 .ResolveAsync(context =>
                 {
                     var loadClassCondition = context.GetArgument<SearchClassModel>("class");
-                    var jLoadClassCondition = JsonConvert.SerializeObject(loadClassCondition);
-                    if (loadClassesCacheService.HasKey(jLoadClassCondition))
-                        return Task.FromResult(loadClassesCacheService.Get(jLoadClassCondition));
+                    if (loadClassesCacheService.HasKey(loadClassCondition))
+                        return Task.FromResult(loadClassesCacheService.Get(loadClassCondition));
 
                     var participatedClasses = relationalDbContext.StudentInClasses.AsQueryable();
                     var classes = relationalDbContext.Classes.AsQueryable();
@@ -76,7 +75,7 @@ namespace GraphQlStudy.Models.GraphQL.Types
                             OpeningHour = oClass.OpeningHour
                         }).ToList();
 
-                    loadClassesCacheService.Set(jLoadClassCondition, loadedClasses);
+                    loadClassesCacheService.Set(loadClassCondition, loadedClasses);
                     return Task.FromResult((IEnumerable<ClassViewModel>) loadedClasses);
                 });
         }

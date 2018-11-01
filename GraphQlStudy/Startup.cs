@@ -32,7 +32,7 @@ namespace GraphQlStudy
 
             services.AddScoped<DbContext, RelationalDbContext>();
             services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(s.GetRequiredService));
-            services.AddScoped(typeof(ICacheService<,>), typeof(CacheService<,>));
+            services.AddScoped(typeof(ICacheService<,>), typeof(JsonizeKeyValueCacheService<,>));
             services.AddSingleton<IDataLoaderContextAccessor, DataLoaderContextAccessor>();
 
             services.AddScoped<StudentType>();
