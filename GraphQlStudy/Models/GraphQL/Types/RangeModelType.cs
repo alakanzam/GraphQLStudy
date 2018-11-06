@@ -9,6 +9,8 @@ namespace GraphQlStudy.Models.GraphQL.Types
 
         public RangeModelType()
         {
+            Name = "RangeModel";
+
             var fromType = typeof(TFrom);
             Field(x => x.From, fromType.IsGenericType && fromType.GetGenericTypeDefinition() == typeof(Nullable<>));
 

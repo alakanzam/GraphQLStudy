@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using GraphQlStudy.Models.Contexts;
-using GraphQlStudy.Models.GraphQL.Queries;
+using GraphQlStudy.Models.GraphQL;
+using GraphQlStudy.Queries;
 using GraphQL;
+using GraphQL.DataLoader;
 using GraphQL.Types;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace GraphQlStudy.Controllers
 {
@@ -16,14 +20,18 @@ namespace GraphQlStudy.Controllers
         private readonly RelationalDbContext _relationalDbContext;
 
         private readonly IDependencyResolver _dependencyResolver;
+
+        private readonly IServiceProvider _serviceProvider;
+
         #endregion
 
         #region Contructor
 
-        public GraphQlController(DbContext dbContext, IDependencyResolver dependencyResolver)
+        public GraphQlController(DbContext dbContext, IDependencyResolver dependencyResolver, IServiceProvider serviceProvider)
         {
             _relationalDbContext = (RelationalDbContext)dbContext;
             _dependencyResolver = dependencyResolver;
+            _serviceProvider = serviceProvider;
         }
 
         #endregion
@@ -37,7 +45,7 @@ namespace GraphQlStudy.Controllers
 
             var schema = new Schema(_dependencyResolver)
             {
-                Query = new BasicStudentSearchQuery(_relationalDbContext)
+                Query = new StudentQuery(_relationalDbContext)
             };
 
             var result = await new DocumentExecuter().ExecuteAsync(_ =>
@@ -46,6 +54,7 @@ namespace GraphQlStudy.Controllers
                 _.Query = query.Query;
                 _.OperationName = query.OperationName;
                 _.Inputs = inputs;
+                _.Listeners.Add(_serviceProvider.GetRequiredService<DataLoaderDocumentListener>());
             }).ConfigureAwait(false);
 
             if (result.Errors?.Count > 0)

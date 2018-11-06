@@ -4,10 +4,13 @@ using GraphQL.Types;
 
 namespace GraphQlStudy.Models.GraphQL.Types
 {
-    public class ClassType: ObjectGraphType<ClassViewModel>
+    public class ClassType: ObjectGraphType<Class>
     {
         #region Constructor
 
+        /// <summary>
+        /// Class type.
+        /// </summary>
         public ClassType()
         {
             Name = nameof(Class);

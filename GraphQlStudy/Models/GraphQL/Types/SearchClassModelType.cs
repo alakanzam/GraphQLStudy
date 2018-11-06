@@ -9,7 +9,7 @@ namespace GraphQlStudy.Models.GraphQL.Types
         public SearchClassModelType()
         {
             Field(x => x.Ids, true).Description("List of class ids");
-            Field<RangeModelType<double?, double?>, RangeModel<double?, double?>>().Name(nameof(SearchClassModel.OpeningHour));
+            Field<RangeModelType<double?, double?>>().Name(nameof(SearchClassModel.OpeningHour)).Description("Opening hour time range");
             //Field(x => x.ClosingHour, true).Description("Class closing hour");
             //Field(x => x.OpeningHour, true).Description("Class opening hour");
             //Field(x => x.Pagination, true).Description("Pagination").Type(new PaginationModelType());

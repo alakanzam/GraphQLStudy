@@ -3,62 +3,57 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphQlStudy.Interfaces;
+using GraphQlStudy.Models;
 using GraphQlStudy.Models.Contexts;
 using GraphQlStudy.Models.Entities;
-using GraphQlStudy.ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace GraphQlStudy.Domains
 {
     public class ClassDomain : IClassDomain
     {
+        #region Properties
+
         private readonly RelationalDbContext _relationalDbContext;
+
+        #endregion
+
+        #region Constructor
 
         public ClassDomain(DbContext dbContext)
         {
             _relationalDbContext = (RelationalDbContext) dbContext;
         }
 
-        public async Task<IEnumerable<ClassViewModel>> SearchAsync(SearchClassModel loadClassCondition, CancellationToken cancellationToken = default(CancellationToken))
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Load classes that student takes part in.
+        /// </summary>
+        /// <param name="studentIds"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task<ILookup<int, Class>> LoadClassesByStudentId(IEnumerable<int> studentIds, CancellationToken cancellationToken)
         {
             var participatedClasses = _relationalDbContext.StudentInClasses.AsQueryable();
             var classes = _relationalDbContext.Classes.AsQueryable();
 
-            if (loadClassCondition != null)
-            {
-                var classIds = loadClassCondition.Ids;
-                classIds = classIds.Where(x => x > 0).Select(x => x).Distinct().ToList();
-                if (classIds.Count > 0)
-                    classes = classes.Where(x => classIds.Contains(x.Id));
-
-                var openingHour = loadClassCondition.OpeningHour;
-                if (openingHour != null)
+            var loadClassesResult = await (from participatedClass in participatedClasses
+                from oClass in classes
+                where participatedClass.ClassId == oClass.Id && studentIds.Contains(participatedClass.StudentId)
+                select new LoadClassByStudentIdResultModel
                 {
-                    var from = openingHour.From;
-                    var to = openingHour.To;
+                    StudentId = participatedClass.StudentId,
+                    Class = oClass
+                }).ToListAsync(cancellationToken);
 
-                    if (from != null)
-                        classes = classes.Where(x => x.OpeningHour >= from);
+            return loadClassesResult.ToLookup(x => x.StudentId, x => x.Class);
 
-                    if (to != null)
-                        classes = classes.Where(x => x.OpeningHour <= to);
-                }
-            }
-
-            var result = from oClass in classes
-                from participatedClass in participatedClasses
-                where participatedClass.ClassId == oClass.Id &&
-                      participatedClass.StudentId == loadClassCondition.StudentId
-                select new ClassViewModel
-                {
-                    Id = oClass.Id,
-                    ClosingHour = oClass.ClosingHour,
-                    Name = oClass.Name,
-                    OpeningHour = oClass.OpeningHour
-                };
-
-            return await result.ToListAsync(cancellationToken);
         }
+
+        #endregion
     }
 }
