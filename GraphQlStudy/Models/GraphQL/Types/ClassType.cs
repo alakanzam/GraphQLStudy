@@ -1,5 +1,4 @@
 ﻿using GraphQlStudy.Models.Entities;
-using GraphQlStudy.ViewModels;
 using GraphQL.Types;
 
 namespace GraphQlStudy.Models.GraphQL.Types

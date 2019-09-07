@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GraphQlStudy.Models;
 using GraphQlStudy.Models.Contexts;
 using GraphQlStudy.Models.Entities;
 using GraphQlStudy.Models.GraphQL.Types;
@@ -9,7 +8,7 @@ using GraphQlStudy.ViewModels;
 using GraphQL.Types;
 using Microsoft.EntityFrameworkCore;
 
-namespace GraphQlStudy.Queries
+namespace GraphQlStudy.Models.GraphQL.Queries
 {
     public class StudentQuery : ObjectGraphType
     {
@@ -21,6 +20,10 @@ namespace GraphQlStudy.Queries
 
         #region Constructor
 
+        /// <summary>
+        /// Initialize student query.
+        /// </summary>
+        /// <param name="dbContext"></param>
         public StudentQuery(DbContext dbContext)
         {
             _relationalDbContext = (RelationalDbContext)dbContext;
@@ -28,7 +31,7 @@ namespace GraphQlStudy.Queries
             var studentQueryArguments = new QueryArguments();
             studentQueryArguments.Add(new QueryArgument<IntGraphType> { Name = nameof(Student.Id), Description = "Student id" });
             Field<StudentType>("student", arguments: studentQueryArguments,
-                resolve: LoadStudent);
+                resolve: LoadStudent, description: "Search for a specific student");
 
             var studentsQueryArguments = new QueryArguments();
             studentsQueryArguments.Add(new QueryArgument<ListGraphType<IntGraphType>> { Name = "ids", Description = "Student indexes." });
@@ -40,7 +43,8 @@ namespace GraphQlStudy.Queries
             Field<ListGraphType<StudentType>>(
                 "students",
                 arguments: studentsQueryArguments,
-                resolve: LoadStudents);
+                resolve: LoadStudents, 
+                description: "Search for a list of students using specific conditions.");
         }
 
         
